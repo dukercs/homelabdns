@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole
+  namespace: dns
+  labels:
+    app: pihole
+    app.kubernetes.io/name: pihole
+    app.kubernetes.io/component: dns
+    app.kubernetes.io/part-of: homelab
+
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+
+  selector:
+    matchLabels:
+      app: pihole
+
+  template:
+    metadata:
+      labels:
+        app: pihole
+
+    spec:
+      automountServiceAccountToken: false
+
+      securityContext:
+        fsGroup: 1000
+
+      containers:
+      - name: pihole
+
+        image: pihole/pihole:2026.07.2
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: dns-udp
+          containerPort: 53
+          protocol: UDP
+
+        - name: dns-tcp
+          containerPort: 53
+          protocol: TCP
+
+        - name: http
+          containerPort: 80
+
+        env:
+
+        - name: TZ
+          value: America/Sao_Paulo
+
+        - name: FTLCONF_webserver_api_password
+          valueFrom:
+            secretKeyRef:
+              name: pihole-secret
+              key: WEBPASSWORD
+
+        - name: FTLCONF_dns_upstreams
+          value: "unbound#53"
+
+        - name: FTLCONF_dns_listeningMode
+          value: "all"
+
+        - name: FTLCONF_misc_privacylevel
+          value: "0"
+
+        volumeMounts:
+        - name: pihole-etc
+          mountPath: /etc/pihole
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+
+          limits:
+            cpu: 500m
+            memory: 512Mi
+
+        livenessProbe:
+          httpGet:
+            path: /admin/login
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 30
+
+        readinessProbe:
+          httpGet:
+            path: /admin/login
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 10
+
+      volumes:
+      - name: pihole-etc
+        persistentVolumeClaim:
+          claimName: pihole-etc

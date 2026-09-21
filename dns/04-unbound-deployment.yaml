@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unbound
+  namespace: dns
+  labels:
+    app: unbound
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+
+  selector:
+    matchLabels:
+      app: unbound
+
+  template:
+    metadata:
+      labels:
+        app: unbound
+
+    spec:
+      automountServiceAccountToken: false
+
+      securityContext:
+        fsGroup: 1000
+
+      containers:
+      - name: unbound
+
+        image: mvance/unbound-rpi:1.22.0
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: dns-udp
+          containerPort: 53
+          protocol: UDP
+
+        - name: dns-tcp
+          containerPort: 53
+          protocol: TCP
+
+        volumeMounts:
+        - name: unbound-config
+          mountPath: /opt/unbound/etc/unbound/unbound.conf
+          subPath: unbound.conf
+          readOnly: true
+
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+
+        livenessProbe:
+          exec:
+            command:
+            - drill
+            - "@127.0.0.1"
+            - cloudflare.com
+          initialDelaySeconds: 15
+          periodSeconds: 30
+
+        readinessProbe:
+          tcpSocket:
+            port: 53
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+      volumes:
+      - name: unbound-config
+        configMap:
+          name: unbound-config
