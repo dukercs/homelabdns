@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: monitoramento
+  labels:
+    app: grafana
+
+spec:
+  selector:
+    app: grafana
+
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: monitoramento
+spec:
+  ingressClassName: traefik
+
+  rules:
+  - host: grafana.1901d
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 80

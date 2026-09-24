@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: prometheus
+  namespace: monitoramento
+  labels:
+    app: prometheus
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: prometheus
+
+  template:
+    metadata:
+      labels:
+        app: prometheus
+
+    spec:
+      containers:
+      - name: prometheus
+
+        image: prom/prometheus:v3.5.0
+        imagePullPolicy: IfNotPresent
+
+        args:
+        - --config.file=/etc/prometheus/prometheus.yml
+        - --storage.tsdb.path=/prometheus
+        - --web.enable-lifecycle
+
+        ports:
+        - containerPort: 9090
+          name: http
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+
+        volumeMounts:
+        - name: config
+          mountPath: /etc/prometheus
+
+        - name: storage
+          mountPath: /prometheus
+
+      volumes:
+      - name: config
+        configMap:
+          name: prometheus-config
+
+      - name: storage
+        emptyDir: {}
