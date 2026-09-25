@@ -297,3 +297,43 @@ Todo componente é instalado manualmente.
 O objetivo não é apenas ter um ambiente funcionando, mas entender como cada recurso do Kubernetes se relaciona.
 
 Preferi adicionar um componente por vez, testar e só então seguir para o próximo. Dessa forma, quando surgiram problemas, ficou mais fácil identificar a causa e ajustar.
+
+
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="imagens/piholeprint.png">
+        <img src="imagens/piholeprint.png" alt="Pi-hole Dashboard" width="100%">
+      </a>
+      <br>
+      <b>Pi-hole Dashboard</b>
+    </td>
+    <td align="center" width="50%">
+      <a href="imagens/prometheustargetsprint.png">
+        <img src="imagens/prometheustargetsprint.png" alt="Prometheus Targets" width="100%">
+      </a>
+      <br>
+      <b>Prometheus Targets</b>
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center" width="50%">
+      <a href="imagens/nodeexporterprint.png">
+        <img src="imagens/nodeexporterprint.png" alt="Node Exporter Dashboard" width="100%">
+      </a>
+      <br>
+      <b>Grafana - Node Exporter</b>
+    </td>
+    <td align="center" width="50%">
+      <a href="imagens/k3sdashprint.png">
+        <img src="imagens/k3sdashprint.png" alt="Kubernetes Dashboard" width="100%">
+      </a>
+      <br>
+      <b>Grafana - Kubernetes</b>
+    </td>
+  </tr>
+</table>
