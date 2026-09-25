@@ -27,16 +27,6 @@ A ideia não foi simplesmente colocar aplicações para funcionar, mas ir entend
 
 # Estrutura do repositório
 
-```
-
-```
-homelabdns/
-├── dns/
-├── monitoramento/
-├── LICENSE
-└── README.md
-```
-
 Cada componente fica separado por diretório.
 
 Dentro de cada pasta os YAML são numerados para facilitar a ordem de criação.
