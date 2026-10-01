@@ -69,6 +69,10 @@ spec:
         volumeMounts:
         - name: pihole-etc
           mountPath: /etc/pihole
+        
+        - name: liveness-probe
+          mountPath: /opt/pihole/liveness-probe.sh
+          subPath: liveness-probe.sh
 
         resources:
           requests:
@@ -80,11 +84,14 @@ spec:
             memory: 512Mi
 
         livenessProbe:
-          httpGet:
-            path: /admin/login
-            port: 80
+          exec:
+            command:
+            - /bin/sh
+            - /opt/pihole/liveness-probe.sh
           initialDelaySeconds: 30
           periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
 
         readinessProbe:
           httpGet:
@@ -97,3 +104,8 @@ spec:
       - name: pihole-etc
         persistentVolumeClaim:
           claimName: pihole-etc
+
+      - name: liveness-probe
+        configMap:
+          name: script-liveness
+          defaultMode: 0755

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: script-liveness
+  namespace: dns
+data:
+  liveness-probe.sh: |
+    #!/bin/sh
+    dig @127.0.0.1 . +short >/dev/null 2>&1
+    exit $?
