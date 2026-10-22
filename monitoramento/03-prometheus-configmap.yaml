@@ -31,9 +31,30 @@ data:
       - targets:
         - kube-state-metrics.monitoramento.svc.cluster.local:8080
 
+    - job_name: pihole
+      kubernetes_sd_configs:
+      - role: pod
+    
+      relabel_configs:
+      - source_labels:
+        - __meta_kubernetes_namespace
+        action: keep
+        regex: dns
+    
+      - source_labels:
+        - __meta_kubernetes_pod_label_app
+        action: keep
+        regex: pihole
+    
+      - source_labels:
+        - __meta_kubernetes_pod_ip
+        target_label: __address__
+        replacement: ${1}:9617
+    
+
     - job_name: 'kubernetes-cadvisor'
       scheme: https
-    
+
       kubernetes_sd_configs:
         - role: node
     

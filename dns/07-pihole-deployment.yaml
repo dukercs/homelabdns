@@ -100,6 +100,43 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 10
 
+      - name: pihole-exporter
+
+        image: ekofr/pihole-exporter:latest
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: metrics
+          containerPort: 9617
+
+        env:
+        - name: PIHOLE_HOSTNAME
+          value: "127.0.0.1"
+
+        - name: PIHOLE_PORT
+          value: "80"
+
+        - name: PIHOLE_PROTOCOL
+          value: "http"
+
+        - name: PIHOLE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pihole-secret
+              key: WEBPASSWORD
+
+        - name: PORT
+          value: "9617"
+
+        resources:
+          requests:
+            cpu: 20m
+            memory: 32Mi
+
+          limits:
+            cpu: 100m
+            memory: 64Mi
+
       volumes:
       - name: pihole-etc
         persistentVolumeClaim:
@@ -109,3 +146,4 @@ spec:
         configMap:
           name: script-liveness
           defaultMode: 0755
+
