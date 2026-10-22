@@ -48,6 +48,7 @@ data:
           private-address: 172.16.0.0/12
           private-address: 192.168.0.0/16
           private-address: 169.254.0.0/16
+          private-domain: "elb.us-east-1.amazonaws.com"
           ratelimit: 1000
           tls-cert-bundle: /etc/ssl/certs/ca-certificates.crt
           unwanted-reply-threshold: 10000
