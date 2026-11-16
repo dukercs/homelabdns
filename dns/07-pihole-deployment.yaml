@@ -31,7 +31,7 @@ spec:
       containers:
       - name: pihole
 
-        image: pihole/pihole:2026.07.2
+        image: pihole/pihole:2026.11.0
         imagePullPolicy: IfNotPresent
 
         ports:
